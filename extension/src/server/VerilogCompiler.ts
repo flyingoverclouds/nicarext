@@ -71,6 +71,8 @@ export namespace Compilers {
 
         private GetDiagnostics(lines: string[]): Diagnostic[] {
             let diagnostics: Diagnostic[] = [];
+            let lastLineNumber:number=1;
+
             for(let l of lines) {
                 if(l.trim()=="")
                     continue;
@@ -81,12 +83,12 @@ export namespace Compilers {
                 // normally, error line looks like ':LINENUM: message'
                 if (l.startsWith(":")) {
                     let pos = l.indexOf(":",1);
-                    lineNumber = Number(l.substring(1,pos));
+                    lineNumber = Number(l.substring(1,pos))-1; // because vscode diagnostic line numbering start a 0
                     message = l.substring(pos+1).trim();
                 }
                 else {
                     message= l + " //INVALID ERROR LINE FORMAT//";
-                    lineNumber=1;
+                    lineNumber=lastLineNumber; // unable to detect line number -> use the last detected
                 }
                 diagnostics.push({
                     severity: DiagnosticSeverity.Error,
@@ -97,6 +99,7 @@ export namespace Compilers {
                     message: `${message}`,
                     source:'ERROR'
                 });
+                lastLineNumber=lineNumber;
             };
             return diagnostics;
         }

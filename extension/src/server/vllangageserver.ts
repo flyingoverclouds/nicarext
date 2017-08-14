@@ -1,6 +1,7 @@
 
 'use strict';
 
+
 import * as querystring from 'querystring';
 import * as vscode from 'vscode';
 import {
@@ -150,7 +151,7 @@ documents.onDidSave((saved) =>{
 			{
 				let filePath: string = querystring.unescape(saved.document.uri).replace("file:///","");
 				let compiler = new Compilers.Compiler(connection.console);
-				compiler.Compile(filePath);
+				let codeerrors = compiler.CheckSyntax(filePath);
 			}
 		} catch (error) {
 			connection.console.error("ERROR : " + error)

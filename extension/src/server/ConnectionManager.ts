@@ -9,25 +9,21 @@ import {
 	CompletionItem, CompletionItemKind
 } from 'vscode-languageserver';
 
-import { Settings, NicarextSettings } from './ISettings';
+import { ISettings, INicarextSettings } from './ISettings';
 
-
-export namespace IcarusServer
+export class ConnectionManager
 {
-    export class ConnectionManager
-    {
-        cnx: IConnection; 
-        
-        /**
-         *
-         */
-        constructor(connection: IConnection) {
-            //this.cnx = connection;
-
-        }
-
-
+    cnx: IConnection; 
+    
+    /**
+     *
+     */
+    constructor(connection: IConnection) {
+        //this.cnx = connection;
 
     }
 
+
+
 }
+

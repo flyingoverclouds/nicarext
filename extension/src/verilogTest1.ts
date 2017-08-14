@@ -1,3 +1,9 @@
+/*
+ * Code used to test multiple featuire, using name command.
+ * 
+ */
+
+
 'use strict';
 
 import {window, commands, Disposable, ExtensionContext, StatusBarAlignment, StatusBarItem, TextDocument} 

@@ -1,6 +1,7 @@
 
 'use strict';
 
+import * as querystring from 'querystring';
 import * as vscode from 'vscode';
 import {
 	IPCMessageReader, IPCMessageWriter,
@@ -10,8 +11,9 @@ import {
 	CompletionItem, CompletionItemKind
 } from 'vscode-languageserver';
 
-import { Settings, NicarextSettings } from './ISettings';
-import { IcarusServer } from './IcarusConnection'
+import { ISettings, INicarextSettings } from './ISettings';
+import { ConnectionManager } from './ConnectionManager'
+import { Compilers } from './VerilogCompiler'
 
 // ************** Global variable
 // root folder of workspace open in vscode (set on connection init)
@@ -19,6 +21,12 @@ let workspaceRoot: string;
 
 // SETTINGS : hold the maxNumberOfProblems setting
 let maxNumberOfProblems: number;
+let iverilogRoot: string = "c:\\iverilog";
+let iverilogCompilerExe:string = '${iverilogRoot}\\bin\\iverilog.exe';
+let iverilogVvpExe:string = '${iverilogRoot}\\bin\\vvp.exe';
+let gtkwaveRoot:string = '${iverilogRoot}\\gtkwave\\';
+let gtkwaveExe:string = '${gtkwaveRoot}\\bin\\gtkwave.exe';
+ 
 
 // *************** server initialisation
 console.log("Starting nicarext langage server ...");
@@ -26,9 +34,9 @@ console.log("Starting nicarext langage server ...");
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 
-let cnxMgr = new IcarusServer.ConnectionManager(connection);
+let cnxMgr = new ConnectionManager(connection);
 
-connection.console.log("Nicarext langage server connected.");
+connection.console.log("Nicarext langage server available.");
 
 connection.onInitialize((params): InitializeResult => {
     connection.console.log("NICAREXT: connection.onInitialize");
@@ -89,15 +97,16 @@ connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
 connection.onDidChangeConfiguration((change) => {
     connection.console.log("NICAREXT: connection.onDidChangeConfiguration");
 
-	let settings = <Settings>change.settings;
+	let settings = <ISettings>change.settings;
 	maxNumberOfProblems = settings.nicarextServer.maxNumberOfProblems || 100;
-	// Revalidate any open text documents
-	//documents.all().forEach(validateTextDocument);
+
+	// TODO : test or find ICARUS installation folder and store in config
+	
 });
 
 connection.onDidChangeWatchedFiles((change) => {
     // Monitored files have change in VSCode
-    connection.console.log("NICAREXT: connection.onDidChangeWatchedFiles");
+    //connection.console.log("NICAREXT: connection.onDidChangeWatchedFiles");
 });
 
 
@@ -116,7 +125,7 @@ documents.listen(connection);
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((changed) => {
-    connection.console.log("NICAREXT: documents.onDidChangeContent");
+    //connection.console.log("NICAREXT: documents.onDidChangeContent");
 });
 
 documents.onDidClose((closed) => {
@@ -124,15 +133,36 @@ documents.onDidClose((closed) => {
 });
 
 documents.onDidOpen((opened) => {
-    connection.console.log("NICAREXT: documents.onDidOpen");
+    //connection.console.log("NICAREXT: documents.onDidOpen");
 });
 
+let isCompiling: boolean = false;
 documents.onDidSave((saved) =>{
-    connection.console.log("NICAREXT:documents. onDidSave");
-});
+		connection.console.log('NICAREXT: documents.onDidSave : ' + saved.document.uri);
+		if (isCompiling)
+		{
+			connection.console.warn("already compiling ... retry later.");
+			return;
+		}
+		isCompiling=true;
+		try {
+			if(saved.document.uri.startsWith("file:///"))
+			{
+				let filePath: string = querystring.unescape(saved.document.uri).replace("file:///","");
+				let compiler = new Compilers.Compiler(connection.console);
+				compiler.Compile(filePath);
+			}
+		} catch (error) {
+			connection.console.error("ERROR : " + error)
+		}
+		finally
+		{
+			isCompiling=false;
+		}
+	});
 
 documents.onWillSave((willSave)=>{
-    connection.console.log("NICAREXT: documents.onWillSave");
+    //connection.console.log("NICAREXT: documents.onWillSave");
 });
 
 

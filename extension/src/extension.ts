@@ -66,8 +66,8 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 	// Options to control the language client
 	let clientOptions: LanguageClientOptions = {
-		// Register the server for plain text documents
-		documentSelector: ['plaintext'],
+		// Register the server for verilog code file
+		documentSelector: ['verilog'],
 		synchronize: {
 			// Synchronize the setting section 'languageServerExample' to the server
 			configurationSection: 'nicarextServer',

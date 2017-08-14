@@ -15,7 +15,7 @@
     "activationEvents": [
         "onCommand:extension.sayHello",
         "onCommand:extension.direBonjour",
-        "onLanguage:plaintext"
+        "onLanguage:verilog"
     ],
     "main": "./out/src/extension",
     "contributes": {

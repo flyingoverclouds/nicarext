@@ -126,41 +126,51 @@ documents.listen(connection);
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((changed) => {
-    //connection.console.log("NICAREXT: documents.onDidChangeContent");
+	//checkVlSyntax(changed.document.uri);
+	//connection.console.log("NICAREXT: documents.onDidChangeContent " + changed.document.uri);
 });
 
 documents.onDidClose((closed) => {
-    connection.console.log("NICAREXT: documents.onDidClose");
+    //connection.console.log("NICAREXT: documents.onDidClose");
 });
 
 documents.onDidOpen((opened) => {
-    //connection.console.log("NICAREXT: documents.onDidOpen");
+	//connection.console.log("NICAREXT: documents.onDidOpen");
+		checkVlSyntax(opened.document.uri);
 });
 
-let isCompiling: boolean = false;
+
 documents.onDidSave((saved) =>{
-		connection.console.log('NICAREXT: documents.onDidSave : ' + saved.document.uri);
-		if (isCompiling)
-		{
-			connection.console.warn("already compiling ... retry later.");
-			return;
-		}
-		isCompiling=true;
-		try {
-			if(saved.document.uri.startsWith("file:///"))
-			{
-				let filePath: string = querystring.unescape(saved.document.uri).replace("file:///","");
-				let compiler = new Compilers.Compiler(connection.console,connection); 
-				let codeerrors = compiler.CheckSyntax(saved.document.uri,filePath); // TODO : add a lamba to send back to vs , instead of passing connection to ctor
-			}
-		} catch (error) {
-			connection.console.error("ERROR : " + error)
-		}
-		finally
-		{
-			isCompiling=false;
-		}
+	checkVlSyntax(saved.document.uri);
 	});
+
+	let isCompiling: boolean = false;
+function checkVlSyntax(documentUri:string)
+{
+	connection.console.log('NICAREXT: documents.onDidSave : ' + documentUri);
+	if (isCompiling)
+	{
+		connection.console.warn("already compiling ... retry later.");
+		return;
+	}
+	isCompiling=true;
+	try {
+		if(documentUri.startsWith("file:///"))
+		{
+			let filePath: string = querystring.unescape(documentUri).replace("file:///","");
+			let compiler = new Compilers.Compiler(connection.console,connection); 
+			let codeerrors = compiler.CheckSyntax(documentUri,filePath); // TODO : add a lamba to send back to vs , instead of passing connection to ctor
+		}
+	} catch (error) {
+		connection.console.error("ERROR : " + error)
+	}
+	finally
+	{
+		isCompiling=false;
+	}
+
+}
+
 
 documents.onWillSave((willSave)=>{
     //connection.console.log("NICAREXT: documents.onWillSave");

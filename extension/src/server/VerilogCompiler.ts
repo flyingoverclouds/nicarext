@@ -87,7 +87,7 @@ export namespace Compilers {
                     message = l.substring(pos+1).trim();
                 }
                 else {
-                    message= l + " //INVALID ERROR LINE FORMAT//";
+                    message= l;
                     lineNumber=lastLineNumber; // unable to detect line number -> use the last detected
                 }
                 diagnostics.push({

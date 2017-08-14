@@ -23,16 +23,18 @@ export namespace Compilers {
         private iverilogVvpExe:string = `${this.iverilogRoot}\\bin\\vvp.exe`;
 
 
+        private connection: IConnection;
         private console: RemoteConsole;
         /**
          * Constructor of IcarusServer instance. Initialize mandatory settings
          */
-        constructor(console: RemoteConsole) {
+        constructor(console: RemoteConsole,connection: IConnection) {
             this.console=console;
+            this.connection=connection;
             // TODO : add iverilog path configuration as parameters 
         }
 
-        public CheckSyntax(fileToCompile: string) : void {
+        public CheckSyntax(uri:string,fileToCompile: string) :void {
             if (!fs.existsSync(this.iverilogCompilerExe)){
                 throw new Error("Verilog compiler not found. Missing  " + this.iverilogCompilerExe);
             }
@@ -51,18 +53,52 @@ export namespace Compilers {
             let iverilogProcess = child_process.execFile(this.iverilogCompilerExe,ivParams,
                 (error,stdout,stderr)=>{
                     if (error) { 
-                        console.warn("*** ERROR: occured -> analyzing stderr to parse errore line");
-                        console.log(stderr);
+                        console.error("Error occured : ---------------------------------------------------------------");
+                        console.error(stderr);
+                        console.error("-------------------------------------------------------------------------------");
+                        // splitting stderr and removing filename
+                        let lines :string[] = stderr.split("\n").map( l=> l.replace(fileToCompile,""));
+                        let diagnostics = this.GetDiagnostics(lines);
+                        this.connection.sendDiagnostics( { uri: uri, diagnostics} );
                     }
                     else{
+                        this.connection.sendDiagnostics( { uri: uri, diagnostics: []} );
+
                         // no error -> return or clean erroneous line in editor
                     }
                 });
         }
 
-        private SendErrorDiagnostic(string): void {
-
+        private GetDiagnostics(lines: string[]): Diagnostic[] {
+            let diagnostics: Diagnostic[] = [];
+            for(let l of lines) {
+                if(l.trim()=="")
+                    continue;
+                console.warn("ERROR: " + l);
+                
+                let message:string="";
+                let lineNumber:number=1;
+                // normally, error line looks like ':LINENUM: message'
+                if (l.startsWith(":")) {
+                    let pos = l.indexOf(":",1);
+                    lineNumber = Number(l.substring(1,pos));
+                    message = l.substring(pos+1).trim();
+                }
+                else {
+                    message= l + " //INVALID ERROR LINE FORMAT//";
+                    lineNumber=1;
+                }
+                diagnostics.push({
+                    severity: DiagnosticSeverity.Error,
+                    range: { 
+                        start: {line: lineNumber, character:0 },
+                        end: { line: lineNumber, character: Number.MAX_VALUE}
+                    },
+                    message: `${message}`,
+                    source:'ERROR'
+                });
+            };
+            return diagnostics;
         }
-
     }
 }

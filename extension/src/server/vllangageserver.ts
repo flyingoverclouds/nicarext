@@ -150,8 +150,8 @@ documents.onDidSave((saved) =>{
 			if(saved.document.uri.startsWith("file:///"))
 			{
 				let filePath: string = querystring.unescape(saved.document.uri).replace("file:///","");
-				let compiler = new Compilers.Compiler(connection.console);
-				let codeerrors = compiler.CheckSyntax(filePath);
+				let compiler = new Compilers.Compiler(connection.console,connection); 
+				let codeerrors = compiler.CheckSyntax(saved.document.uri,filePath); // TODO : add a lamba to send back to vs , instead of passing connection to ctor
 			}
 		} catch (error) {
 			connection.console.error("ERROR : " + error)

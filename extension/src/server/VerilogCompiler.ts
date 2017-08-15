@@ -24,14 +24,11 @@ export namespace Compilers {
 
 
         private connection: IConnection;
-        private console: RemoteConsole;
         /**
          * Constructor of IcarusServer instance. Initialize mandatory settings
          */
-        constructor(console: RemoteConsole,connection: IConnection) {
-            this.console=console;
-            this.connection=connection;
-            // TODO : add iverilog path configuration as parameters 
+        constructor(connection: IConnection) {
+            this.connection=connection; 
         }
 
         public CheckSyntax(uri:string,fileToCompile: string) :void {

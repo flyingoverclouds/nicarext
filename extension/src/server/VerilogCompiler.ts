@@ -11,29 +11,28 @@ import {
 	CompletionItem, CompletionItemKind, RemoteConsole
 } from 'vscode-languageserver';
 
+import { INicarextSettings } from './ISettings'
+
 
 export namespace Compilers {
     /*
      * This class encapsulate run of IcarusServer
     */
     export class Compiler {
-        // TODO : replace iverilog 
-        private iverilogRoot: string = `c:\\iverilog`;
-        private iverilogCompilerExe:string = `${this.iverilogRoot}\\bin\\iverilog.exe`;
-        private iverilogVvpExe:string = `${this.iverilogRoot}\\bin\\vvp.exe`;
-
-
         private connection: IConnection;
+        private settings: INicarextSettings;
+
         /**
          * Constructor of IcarusServer instance. Initialize mandatory settings
          */
-        constructor(connection: IConnection) {
+        constructor(connection: IConnection,settings: INicarextSettings) {
             this.connection=connection; 
+            this.settings=settings;
         }
 
         public CheckSyntax(uri:string,fileToCompile: string) :void {
-            if (!fs.existsSync(this.iverilogCompilerExe)){
-                throw new Error("Verilog compiler not found. Missing  " + this.iverilogCompilerExe);
+            if (!fs.existsSync(this.settings.iverilogCompilerExePath)){
+                throw new Error("Verilog compiler not found. Missing  " + this.settings.iverilogCompilerExePath);
             }
             if (!fs.existsSync(fileToCompile)){
                 throw new Error("Invalid file name. Not found " + fileToCompile);
@@ -46,7 +45,7 @@ export namespace Compilers {
             let ivParams = ["-o","NUL",fileToCompile];
 
             //calling iverilog.exe to retrieve stderr (syntaxt or compilation error)
-            let iverilogProcess = child_process.execFile(this.iverilogCompilerExe,ivParams,
+            let iverilogProcess = child_process.execFile(this.settings.iverilogCompilerExePath,ivParams,
                 (error,stdout,stderr)=>{
                     if (error) { 
                         // splitting stderr and removing filename

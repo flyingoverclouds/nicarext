@@ -72,7 +72,7 @@ export class DocumentManager
             if(documentUri.startsWith("file:///"))
             {
                 let filePath: string = querystring.unescape(documentUri).replace("file:///","");
-                let compiler = new Compilers.Compiler(this.connectionManager.getConnection()); 
+                let compiler = new Compilers.Compiler(this.connectionManager.getConnection(),this.connectionManager.getSettings().nicarextServer); 
                 let codeerrors = compiler.CheckSyntax(documentUri,filePath); // TODO : add a lamba to send back to vs , instead of passing connection to ctor
             }
         } catch (error) {

@@ -1,6 +1,6 @@
 'use strict';
 /*
- * This class implement vscode langag server connection management for the nicarext extension.
+ * This class implement vscode langage server connection management for the nicarext extension.
  *
  */
 
@@ -36,6 +36,10 @@ export class ConnectionManager
         return this.connection;
     }
 
+    public getSettings()
+    {
+        return this.currentSettings;
+    }
     
     private OnInitialized(params:InitializeParams): InitializeResult {
         this.connection.console.log("NICAREXT:  ConnectionManager.OnInitialize");

@@ -40,13 +40,17 @@ export namespace Compilers {
             let iverilogProcess = child_process.execFile(this.settings.iverilogCompilerExePath,ivParams,
                 (error,stdout,stderr)=>{
                     if (error) { 
+                        console.log("## ERRORS :")
+                        console.log(stderr);
+                        console.log("## ----------------------")
                         // splitting stderr and removing filename
                         let lines :string[] = stderr.split("\n").map( l=> l.replace(fileToCompile,""));
+                        console.log(lines.length + " line(s) after split");
                         let diagnostics = this.GetDiagnostics(lines);
-                        //this.connection.sendDiagnostics( { uri: uri, diagnostics} );
                         sendDiag(diagnostics);
                     }
                     else{
+                        console.log("No error.");
                         // no error -> return empty dignostics to clear the list in vscode
                         sendDiag( [] );
                         
@@ -80,7 +84,7 @@ export namespace Compilers {
                 else {
                     message= l;
                     lineNumber=lastLineNumber; // unable to detect line number -> use the last detected
-                    diagseverity=DiagnosticSeverity.Warning; // but as warning
+                    //diagseverity=DiagnosticSeverity.Warning; // but as warning
                 }
                 diagnostics.push({
                     severity: diagseverity,

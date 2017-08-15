@@ -47,20 +47,30 @@
             "type": "object",
             "title": "Configuration for NIcarExt extension",
             "properties": {
-                "nicarextServer.maxNumberOfProblems": {
-                "type": "number",
-                "default": 100,
-                "description": "Controls the maximum number of problems produced by the server."
+                "nicarextServer.iverilogCompilerExePath": {
+                    "type": "string",
+                    "default": "C:/iverilog/bin/iverilog.exe",
+                    "description": "Full path to Icarus Verilog compiler executable, or juste executable name if in path"
+                },
+                "nicarextServer.vvpExePath": {
+                    "type": "string",
+                    "default": "C:/iverilog/bin/vvp.exe",
+                    "description": "Full path to Icarus VVP executable, or juste executable name if in path"
+                },
+                "nicarextServer.gtkWaveExePath": {
+                    "type": "string",
+                    "default": "C:/iverilog/gtkwave/bin",
+                    "description": "Full path to GTKWave executable, or juste executable name if in path"
                 },
                 "nicarextServer.trace.server": {
-                "type": "string",
-                "enum": [
-                    "off",
-                    "messages",
-                    "verbose"
-                ],
-                "default": "off",
-                "description": "Traces the communication between VSCode and the nicarext service."
+                    "type": "string",
+                    "enum": [
+                        "off",
+                        "messages",
+                        "verbose"
+                    ],
+                    "default": "off",
+                    "description": "Traces the communication between VSCode and the nicarext service."
                 }        
             }
         }

@@ -43,28 +43,23 @@ export namespace Compilers {
             }
 
             // TODO : check if a iverilog build file is available in folder -> use it, othe wise compile saved file
-            
 
             // iverilog output file is NUL because we only want syntax check and retrieve stderr 
-            // TODO : add unix OS support 
+            // TODO : check/add unix OS support 
             let ivParams = ["-o","NUL",fileToCompile];
 
             //calling iverilog.exe to retrieve stderr (syntaxt or compilation error)
             let iverilogProcess = child_process.execFile(this.iverilogCompilerExe,ivParams,
                 (error,stdout,stderr)=>{
                     if (error) { 
-                        console.error("Error occured : ---------------------------------------------------------------");
-                        console.error(stderr);
-                        console.error("-------------------------------------------------------------------------------");
                         // splitting stderr and removing filename
                         let lines :string[] = stderr.split("\n").map( l=> l.replace(fileToCompile,""));
                         let diagnostics = this.GetDiagnostics(lines);
                         this.connection.sendDiagnostics( { uri: uri, diagnostics} );
                     }
                     else{
+                        // no error -> return empty dignostics to clear the list in vscode
                         this.connection.sendDiagnostics( { uri: uri, diagnostics: []} );
-
-                        // no error -> return or clean erroneous line in editor
                     }
                 });
         }
@@ -76,8 +71,8 @@ export namespace Compilers {
             for(let l of lines) {
                 if(l.trim()=="")
                     continue;
-                console.warn("ERROR: " + l);
-                
+                let diagseverity:DiagnosticSeverity=DiagnosticSeverity.Error;
+
                 let message:string="";
                 let lineNumber:number=1;
                 // normally, error line looks like ':LINENUM: message'
@@ -85,19 +80,23 @@ export namespace Compilers {
                     let pos = l.indexOf(":",1);
                     lineNumber = Number(l.substring(1,pos))-1; // because vscode diagnostic line numbering start a 0
                     message = l.substring(pos+1).trim();
+                    if (message.startsWith("error:")) { // clean message text
+                        message=message.substring(6);
+                    }
                 }
                 else {
                     message= l;
                     lineNumber=lastLineNumber; // unable to detect line number -> use the last detected
+                    diagseverity=DiagnosticSeverity.Warning; // but as warning
                 }
                 diagnostics.push({
-                    severity: DiagnosticSeverity.Error,
+                    severity: diagseverity,
                     range: { 
                         start: {line: lineNumber, character:0 },
                         end: { line: lineNumber, character: Number.MAX_VALUE}
                     },
                     message: `${message}`,
-                    source:'ERROR'
+                    source:''
                 });
                 lastLineNumber=lineNumber;
             };

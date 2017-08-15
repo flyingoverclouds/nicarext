@@ -1,9 +1,9 @@
-
-// These are the example settings we defined in the client's package.json
-// file
+// Definition of settings interface for Nicarext VSCode Extension
 
 	export interface INicarextSettings {
-		maxNumberOfProblems:number;
+		iverilogCompilerExePath:string;
+		vvpExePath:string;
+		gtkWaveExePath:string;
 	}
 
 

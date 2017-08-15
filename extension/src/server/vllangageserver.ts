@@ -20,6 +20,8 @@ import { Compilers } from './VerilogCompiler'
 // root folder of workspace open in vscode (set on connection init)
 let workspaceRoot: string; 
 
+let extensionSettings: INicarextSettings;
+
 // SETTINGS : hold the maxNumberOfProblems setting
 let maxNumberOfProblems: number;
 let iverilogRoot: string = "c:\\iverilog";
@@ -34,81 +36,8 @@ console.log("Starting nicarext langage server ...");
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
-
+connection.console.log("create connection = " + connection);
 let cnxMgr = new ConnectionManager(connection);
-
-connection.console.log("Nicarext langage server available.");
-
-connection.onInitialize((params): InitializeResult => {
-    connection.console.log("NICAREXT: connection.onInitialize");
-
-	workspaceRoot = params.rootPath; // store locally the root folder ofworkspace open in vscode
-	return {
-		capabilities: {
-			// Tell the client that the server works in FULL text document sync mode
-            textDocumentSync: documents.syncKind,
-            
-			// Tell the client that the server support code complete
-			completionProvider: {
-				resolveProvider: true
-			}
-		}
-	}
-});
-
-
-// This handler provides the initial list of the completion items.
-connection.onCompletion((textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-     connection.console.log("NICAREXT: connection.onCompletion");
-     
-	// The pass parameter contains the position of the text document in 
-	// which code complete got requested. For the example we ignore this
-	// info and always provide the same completion items.
-	return [
-		{
-			label: 'TypeScript',
-			kind: CompletionItemKind.Text,
-			data: 1
-		},
-		{
-			label: 'JavaScript',
-			kind: CompletionItemKind.Text,
-			data: 2
-		}
-	]
-});
-
-// This handler resolve additional information for the item selected in
-// the completion list.
-connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
-    connection.console.log("NICAREXT: connection.onCompletionResolve");
-    
-	if (item.data === 1) {
-		item.detail = 'TypeScript details',
-		item.documentation = 'TypeScript documentation'
-	} else if (item.data === 2) {
-		item.detail = 'JavaScript details',
-		item.documentation = 'JavaScript documentation'
-	}
-	return item;
-});
-
-// The settings have changed. Is send on server activation
-// as well.
-connection.onDidChangeConfiguration((change) => {
-    connection.console.log("NICAREXT: connection.onDidChangeConfiguration");
-
-	let settings = <ISettings>change.settings;
-	maxNumberOfProblems = settings.nicarextServer.maxNumberOfProblems || 100;
-
-	// TODO : test or find ICARUS installation folder and store in config
-	
-});
-
-connection.onDidChangeWatchedFiles((change) => {
-    // Monitored files have change in VSCode
-    //connection.console.log("NICAREXT: connection.onDidChangeWatchedFiles");
-});
 
 
 
@@ -118,8 +47,9 @@ let documents: TextDocuments = new TextDocuments();
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
-documents.listen(connection);
 
+//documents.listen(connection);
+documents.listen(cnxMgr.getConnection());
 
 
 
@@ -141,13 +71,13 @@ documents.onDidOpen((opened) => {
 
 
 documents.onDidSave((saved) =>{
+	//connection.console.log('NICAREXT: documents.onDidSave : ' + saved.document.uri);
 	checkVlSyntax(saved.document.uri);
 	});
 
-	let isCompiling: boolean = false;
+let isCompiling: boolean = false;
 function checkVlSyntax(documentUri:string)
 {
-	connection.console.log('NICAREXT: documents.onDidSave : ' + documentUri);
 	if (isCompiling)
 	{
 		connection.console.warn("already compiling ... retry later.");

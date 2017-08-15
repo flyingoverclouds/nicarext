@@ -31,6 +31,9 @@ export class ConnectionManager
         this.connection.onDidChangeWatchedFiles( (changes) => this.OnDidChangedWatchedFiles(changes) );
     }
 
+    public Listen():void {
+        this.connection.listen();
+    }
     public getConnection()
     {
         return this.connection;
@@ -40,9 +43,9 @@ export class ConnectionManager
     {
         return this.currentSettings;
     }
-    
+
     private OnInitialized(params:InitializeParams): InitializeResult {
-        this.connection.console.log("NICAREXT:  ConnectionManager.OnInitialize");
+        //this.connection.console.log("NICAREXT:  ConnectionManager.OnInitialize");
         this.workspaceRoot = params.rootPath; // store locally the root folder ofworkspace open in vscode
         return {
             capabilities: {
@@ -58,9 +61,8 @@ export class ConnectionManager
     }
 
     private OnDidChangeConfiguration(change: DidChangeConfigurationParams) {
-        this.connection.console.log("NICAREXT: ConnectionManager.OnDidChangeConfiguration");
+        //this.connection.console.log("NICAREXT: ConnectionManager.OnDidChangeConfiguration");
         this.currentSettings = <ISettings>change.settings;
-        this.connection.console.log("iverlogexe=" + this.currentSettings.nicarextServer.iverilogCompilerExePath);
     }
 
     private OnDidChangedWatchedFiles(changes: DidChangeWatchedFilesParams) {

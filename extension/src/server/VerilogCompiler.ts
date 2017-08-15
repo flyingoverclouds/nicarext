@@ -4,11 +4,7 @@ import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
 import {
-	IPCMessageReader, IPCMessageWriter,
-	createConnection, IConnection, TextDocumentSyncKind,
-	TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
-	InitializeParams, InitializeResult, TextDocumentPositionParams,
-	CompletionItem, CompletionItemKind, RemoteConsole
+    Diagnostic, DiagnosticSeverity
 } from 'vscode-languageserver';
 
 import { INicarextSettings } from './ISettings'
@@ -19,18 +15,16 @@ export namespace Compilers {
      * This class encapsulate run of IcarusServer
     */
     export class Compiler {
-        private connection: IConnection;
         private settings: INicarextSettings;
 
         /**
          * Constructor of IcarusServer instance. Initialize mandatory settings
          */
-        constructor(connection: IConnection,settings: INicarextSettings) {
-            this.connection=connection; 
+        constructor(settings: INicarextSettings) {
             this.settings=settings;
         }
 
-        public CheckSyntax(uri:string,fileToCompile: string) :void {
+        public CheckSyntax(uri:string,fileToCompile: string, sendDiag: (d: Diagnostic[]) => void ) :void {
             if (!fs.existsSync(this.settings.iverilogCompilerExePath)){
                 throw new Error("Verilog compiler not found. Missing  " + this.settings.iverilogCompilerExePath);
             }
@@ -38,9 +32,7 @@ export namespace Compilers {
                 throw new Error("Invalid file name. Not found " + fileToCompile);
             }
 
-            // TODO : check if a iverilog build file is available in folder -> use it, othe wise compile saved file
-
-            // iverilog output file is NUL because we only want syntax check and retrieve stderr 
+            // iverilog outputfile set to  NUL because we only want syntax check and stderr retieving without a buil file 
             // TODO : check/add unix OS support 
             let ivParams = ["-o","NUL",fileToCompile];
 
@@ -51,11 +43,13 @@ export namespace Compilers {
                         // splitting stderr and removing filename
                         let lines :string[] = stderr.split("\n").map( l=> l.replace(fileToCompile,""));
                         let diagnostics = this.GetDiagnostics(lines);
-                        this.connection.sendDiagnostics( { uri: uri, diagnostics} );
+                        //this.connection.sendDiagnostics( { uri: uri, diagnostics} );
+                        sendDiag(diagnostics);
                     }
                     else{
                         // no error -> return empty dignostics to clear the list in vscode
-                        this.connection.sendDiagnostics( { uri: uri, diagnostics: []} );
+                        sendDiag( [] );
+                        
                     }
                 });
         }
@@ -67,6 +61,9 @@ export namespace Compilers {
             for(let l of lines) {
                 if(l.trim()=="")
                     continue;
+                if (l.includes("error(s) during elaboration")) // removing iverilog summary line
+                    continue;
+
                 let diagseverity:DiagnosticSeverity=DiagnosticSeverity.Error;
 
                 let message:string="";

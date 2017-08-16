@@ -8,13 +8,14 @@ import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, T
 
 import { Nicorext } from "./verilogTest1";
 
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "hellonico" is now active!');
+    console.log('Congratulations, your extension "NIverExt" is now active!');
 
     // ***************************** ACTIONVATION Extension  1
 
@@ -69,7 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// Register the server for verilog code file
 		documentSelector: ['verilog'],
 		synchronize: {
-			// Synchronize the setting section 'languageServerExample' to the server
+			// Synchronize the setting section 'nicarextServer' to the server
 			configurationSection: 'nicarextServer',
 			// Notify the server about file changes to '.clientrc files contain in the workspace
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/.clientrc')

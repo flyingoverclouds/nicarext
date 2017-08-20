@@ -15,27 +15,25 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "NIverExt" is now active!');
-
-    // ***************************** ACTIONVATION Extension  1
+    console.log('Congratulations, your extension "NiVerExt-4-IVerilog" is now active!');
+    console.log('Congratulations, your extension "NiVerExt-4-IceWatch" is now active!');
+    
+    // ***************************** ACTIONVATION Extension  1 "sayhello"
 
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('extension.sayHello', () => {
+    let disposable = vscode.commands.registerCommand('niverext.sayHello', () => {
         // The code you place here will be executed every time your command is executed
 
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World NICOLAS!');
-
-
+        vscode.window.showInformationMessage('Hello from NiVerExt-4-IVerilog. Happy hard-coding.'); 
+        vscode.window.showInformationMessage('Hello from NiVerExt-4-IceWatch. Happy hard-coding.');
         let testVl = new Nicorext.VerilogHelper(null);
-
     });
     context.subscriptions.push(disposable);
        
     // ***************************** ACTIONVATION Extension  2
-    let disposable2 = vscode.commands.registerCommand('extension.direBonjour', () => {
+    let disposable2 = vscode.commands.registerCommand('niverext.direBonjour', () => {
         vscode.window.showInformationMessage('Bonjour tout le monde du Code!');
     
         var editor = vscode.window.activeTextEditor;

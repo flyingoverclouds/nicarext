@@ -36,12 +36,12 @@
         }],
         
         "commands": [{
-            "command": "extension.sayHello",
-            "title": "Hello World"
+            "command": "niverext.sayHello",
+            "title": "[NiVerExt] Hello World"
         } ,
         {
-            "command": "extension.direBonjour",
-            "title": "VSCode va vous dire bonjour"
+            "command": "niverext.direBonjour",
+            "title": "[NiVerExt] VSCode va vous dire bonjour"
         }],
         "configuration": {
             "type": "object",

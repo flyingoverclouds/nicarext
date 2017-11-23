@@ -1,7 +1,7 @@
 {
     "name": "niverext",
     "displayName": "NiVerExt-4-IcarusVerilog",
-    "description": "Icarus Verilog and simulator extension",
+    "description": "IcarusVerilog and simulator extension for VSCode",
     "version": "0.1708.27",
     "publisher": "niclerc-coder",
     "homepage": "https://github.com/flyingoverclouds/nicarext",
@@ -47,29 +47,29 @@
             },
             {
                 "command": "niverext.buildfile",
-                "title": "Build the current iVerilog file and generate a .vvp binary"
+                "title": "[NiVerExt] Build the current iVerilog file and generate a .vvp binary"
             }
         ],
         "configuration": {
             "type": "object",
-            "title": "Configuration for NIcarExt extension",
+            "title": "Configuration for NiVerExt extension",
             "properties": {
-                "nicarextServer.iverilogCompilerExePath": {
+                "niverextServer.iverilogCompilerExePath": {
                     "type": "string",
                     "default": "C:/iverilog/bin/iverilog.exe",
                     "description": "Full path to Icarus Verilog compiler executable, or juste executable name if in path"
                 },
-                "nicarextServer.vvpExePath": {
+                "niverextServer.vvpExePath": {
                     "type": "string",
                     "default": "C:/iverilog/bin/vvp.exe",
                     "description": "Full path to Icarus VVP executable, or juste executable name if in path"
                 },
-                "nicarextServer.gtkWaveExePath": {
+                "niverextServer.gtkWaveExePath": {
                     "type": "string",
                     "default": "C:/iverilog/gtkwave/bin",
                     "description": "Full path to GTKWave executable, or juste executable name if in path"
                 },
-                "nicarextServer.trace.server": {
+                "niverextServer.trace.server": {
                     "type": "string",
                     "enum": [
                         "off",

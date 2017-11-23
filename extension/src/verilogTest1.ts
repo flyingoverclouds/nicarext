@@ -1,8 +1,4 @@
-/*
- * Code used to test multiple featuire, using name command.
- * 
- */
-
+// Various test for VSCode extension
 
 'use strict';
 

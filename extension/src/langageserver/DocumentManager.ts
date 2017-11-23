@@ -1,6 +1,6 @@
 'use strict';
 /*
- * This class implement vscode langag server document management for the nicarext extension.
+ * This class implement vscode langag server document management for the niverext extension.
  *
  */
 
@@ -13,7 +13,7 @@ import {
 	TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
  } from 'vscode-languageserver';
 
-import { ISettings, INicarextSettings } from './ISettings';
+import { ISettings, INiVerExtSettings } from './ISettings';
 import { ConnectionManager } from './ConnectionManager';
 import { Compilers } from './VerilogCompiler'
 
@@ -72,7 +72,7 @@ export class DocumentManager
             if(documentUri.startsWith("file:///"))
             {
                 let filePath: string = querystring.unescape(documentUri).replace("file:///","");
-                let compiler = new Compilers.Compiler(this.connectionManager.getSettings().nicarextServer); 
+                let compiler = new Compilers.Compiler(this.connectionManager.getSettings().niverextServer); 
                 compiler.CheckSyntax(documentUri,filePath, (diagnostics)=>{
                     this.SendDiagnostics(documentUri,diagnostics );
                 });

@@ -16,9 +16,8 @@ export function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "NiVerExt-4-IVerilog" is now active!');
-    console.log('Congratulations, your extension "NiVerExt-4-IceWatch" is now active!');
     
-    // ***************************** ACTIONVATION Extension  1 "sayhello"
+    // ***************************** ACTIONVATION Extension Test 1 "sayhello"
 
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
@@ -27,12 +26,11 @@ export function activate(context: vscode.ExtensionContext) {
         // The code you place here will be executed every time your command is executed
 
         vscode.window.showInformationMessage('Hello from NiVerExt-4-IVerilog. Happy hard-coding.'); 
-        vscode.window.showInformationMessage('Hello from NiVerExt-4-IceWatch. Happy hard-coding.');
         let testVl = new Nicorext.VerilogHelper(null);
     });
     context.subscriptions.push(disposable);
        
-    // ***************************** ACTIONVATION Extension  2
+    // ***************************** ACTIONVATION Extension Test 2
     let disposable2 = vscode.commands.registerCommand('niverext.direBonjour', () => {
         vscode.window.showInformationMessage('Bonjour tout le monde du Code!');
     
@@ -72,10 +70,10 @@ export function activate(context: vscode.ExtensionContext) {
     
 
     // ******************************** Activation LANGAGE SERVER
-    // The server is implemented in nodeJS
+    // The server is hosted in subfolder ./langageserver
+    let serverModule = context.asAbsolutePath(path.join('out/src/langageserver', 'vllangageserver.js'));
 
-    let serverModule = context.asAbsolutePath(path.join('out/src/server', 'vllangageserver.js'));
-	// The debug options for the server
+    // The debug options for the server
 	let debugOptions = { execArgv: ["--nolazy", "--debug=6009"] };
 	
 	// If the extension is launched in debug mode then the debug server options are used
@@ -84,20 +82,21 @@ export function activate(context: vscode.ExtensionContext) {
 		run : { module: serverModule, transport: TransportKind.ipc },
 		debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
 	}
-	// Options to control the language client
+
+    // Options to control the language client
 	let clientOptions: LanguageClientOptions = {
 		// Register the server for verilog code file
 		documentSelector: ['verilog'],
 		synchronize: {
-			// Synchronize the setting section 'nicarextServer' to the server
-			configurationSection: 'nicarextServer',
+			// Synchronize the setting section 'niverextServer' to the server
+			configurationSection: 'niverextServer',
 			// Notify the server about file changes to '.clientrc files contain in the workspace
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/.clientrc')
 		}
 	}
 
     // Create the language client and start the client.
-	let langcliDisposable = new LanguageClient('nicarextServer', 'NiVerExt IcarusVerilog extension langage server', serverOptions, clientOptions).start();
+	let langcliDisposable = new LanguageClient('niverextServer', 'NiVerExt IcarusVerilog extension langage server', serverOptions, clientOptions).start();
 	
 	// Push the disposable to the context's subscriptions so that the 
 	// client can be deactivated on extension deactivation
@@ -107,3 +106,4 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {
 }
+

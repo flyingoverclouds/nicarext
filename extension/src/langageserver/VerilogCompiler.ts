@@ -7,7 +7,7 @@ import {
     Diagnostic, DiagnosticSeverity
 } from 'vscode-languageserver';
 
-import { INicarextSettings } from './ISettings'
+import { INiVerExtSettings } from './ISettings'
 
 
 export namespace Compilers {
@@ -15,18 +15,18 @@ export namespace Compilers {
      * This class encapsulate run of IcarusServer
     */
     export class Compiler {
-        private settings: INicarextSettings;
+        private settings: INiVerExtSettings;
 
         /**
          * Constructor of IcarusServer instance. Initialize mandatory settings
          */
-        constructor(settings: INicarextSettings) {
+        constructor(settings: INiVerExtSettings) {
             this.settings=settings;
         }
 
         public CheckSyntax(uri:string,fileToCompile: string, sendDiag: (d: Diagnostic[]) => void ) :void {
             if (!fs.existsSync(this.settings.iverilogCompilerExePath)){
-                throw new Error("Verilog compiler not found. Missing  " + this.settings.iverilogCompilerExePath);
+                throw new Error("IcarusVerilog compiler not found. notfound '" + this.settings.iverilogCompilerExePath + "'");
             }
             if (!fs.existsSync(fileToCompile)){
                 throw new Error("Invalid file name. Not found " + fileToCompile);

@@ -1,9 +1,7 @@
 'use strict';
 /*
  * This class implement vscode langage server connection management for the nicarext extension.
- *
  */
-
 import * as vscode from 'vscode';
 import {
 	IPCMessageReader, IPCMessageWriter,
@@ -14,7 +12,7 @@ import {
 	CompletionItem, CompletionItemKind
 } from 'vscode-languageserver';
 
-import { ISettings, INicarextSettings } from './ISettings';
+import { ISettings, INiVerExtSettings } from './ISettings';
 
 export class ConnectionManager
 {
@@ -23,7 +21,7 @@ export class ConnectionManager
     private workspaceRoot: string;
 
     constructor(cnx: IConnection) {
-        this.connection = cnx
+        this.connection = cnx;
         this.connection.onInitialize( (initParams): InitializeResult => this.OnInitialized(initParams) );
         this.connection.onDidChangeConfiguration( (change) =>  this.OnDidChangeConfiguration(change) );
         this.connection.onCompletion( (params): CompletionItem[] => this.OnCompletion(params));

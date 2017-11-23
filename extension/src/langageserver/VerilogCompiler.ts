@@ -53,7 +53,6 @@ export namespace Compilers {
                         console.log("No error.");
                         // no error -> return empty dignostics to clear the list in vscode
                         sendDiag( [] );
-                        
                     }
                 });
         }
@@ -91,6 +90,10 @@ export namespace Compilers {
                         message= l2;
                         lineNumber=lastLineNumber; // unable to detect line number -> use the last detected
                         //diagseverity=DiagnosticSeverity.Warning; // but as warning
+                    }
+                    if (message.includes("nknown module type")==true)
+                    {
+                        message+=" ( You probably forget to create or update a .VPJ file ) ";
                     }
                     lastDiagnostic={
                         severity: diagseverity,

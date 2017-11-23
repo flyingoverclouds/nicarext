@@ -1,9 +1,9 @@
 {
-    "name": "nicarext",
-    "displayName": "NIcarExt",
-    "description": "Icarus Verilog and simulator extension by Nicolas CLERC",
-    "version": "0.0.1",
-    "publisher": "niclerc-vscode",
+    "name": "niverext",
+    "displayName": "NiVerExt-4-IcarusVerilog",
+    "description": "Icarus Verilog and simulator extension",
+    "version": "0.1708.27",
+    "publisher": "niclerc-coder",
     "homepage": "https://github.com/flyingoverclouds/nicarext",
     "engines": {
         "vscode": "^1.14.0"
@@ -15,6 +15,7 @@
     "activationEvents": [
         "onCommand:extension.sayHello",
         "onCommand:extension.direBonjour",
+        "onCommand:niverext.buildfile",
         "onLanguage:verilog"
     ],
     "main": "./out/src/extension",
@@ -35,14 +36,20 @@
 			"path": "./src/snippets/verilog.json"
         }],
         
-        "commands": [{
-            "command": "niverext.sayHello",
-            "title": "[NiVerExt] Hello World"
-        } ,
-        {
-            "command": "niverext.direBonjour",
-            "title": "[NiVerExt] VSCode va vous dire bonjour"
-        }],
+        "commands": [
+            {
+                "command": "niverext.sayHello",
+                "title": "[NiVerExt] Hello World"
+            } ,
+            {
+                "command": "niverext.direBonjour",
+                "title": "[NiVerExt] VSCode va vous dire bonjour"
+            },
+            {
+                "command": "niverext.buildfile",
+                "title": "Build the current iVerilog file and generate a .vvp binary"
+            }
+        ],
         "configuration": {
             "type": "object",
             "title": "Configuration for NIcarExt extension",

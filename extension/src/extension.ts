@@ -50,6 +50,27 @@ export function activate(context: vscode.ExtensionContext) {
     });
     context.subscriptions.push(disposable2);
 
+    // ******************************** Activation of extension 'niverext.buildfile'
+    let disposable3 = vscode.commands.registerCommand('niverext.buildfile', () => {
+    
+        var editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showWarningMessage('No file file opened');
+            return; // No open text editor
+        }
+        if (!(editor.document.fileName.endsWith('.v') || editor.document.fileName.endsWith('.vh'))){
+            vscode.window.showWarningMessage('Not a verilog (.v or .vh) file.');
+            return; // not a verilog file
+        }
+        var selection = editor.selection;
+//        var text = editor.document.getText(selection);
+
+        // Display a message box to the user
+        vscode.window.showInformationMessage('Compiling : ' + editor.document.fileName);
+    });
+    context.subscriptions.push(disposable3);
+    
+
     // ******************************** Activation LANGAGE SERVER
     // The server is implemented in nodeJS
 
@@ -76,7 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
     // Create the language client and start the client.
-	let langcliDisposable = new LanguageClient('nicarextServer', 'Icarus support extension by Nicolas CLERC', serverOptions, clientOptions).start();
+	let langcliDisposable = new LanguageClient('nicarextServer', 'NiVerExt IcarusVerilog extension langage server', serverOptions, clientOptions).start();
 	
 	// Push the disposable to the context's subscriptions so that the 
 	// client can be deactivated on extension deactivation

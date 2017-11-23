@@ -3,10 +3,12 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
 import { Nicorext } from "./verilogTest1";
+import { ISettings } from './langageserver/ISettings';
 
 
 // this method is called when your extension is activated
@@ -100,10 +102,26 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	// Push the disposable to the context's subscriptions so that the 
 	// client can be deactivated on extension deactivation
-	context.subscriptions.push(langcliDisposable);
+    context.subscriptions.push(langcliDisposable);
+    
+    // ******************************** Check if iverilog compiler is not present to infor dev
+    let cfg = vscode.workspace.getConfiguration('niverextServer'); 
+    if (!fs.existsSync(cfg.get('iverilogCompilerExePath') as string)){
+        vscode.window.showErrorMessage('IcarusVerilog compiler not found! Please install it or update extension configuration ( see https://github.com/flyingoverclouds/nicarext/extension/doc/configuration.md)');
+    }
+
+    if (!fs.existsSync(cfg.get('vvpExePath') as string)){
+        vscode.window.showErrorMessage('VVP exe not found! Please install it or update extension configuration ( see https://github.com/flyingoverclouds/nicarext/extension/doc/configuration.md)');
+    }
+
+    if (!fs.existsSync(cfg.get('gtkWaveExePath') as string)){
+        vscode.window.showErrorMessage('GTKWAVE exe not found! Please install it or update extension configuration ( see https://github.com/flyingoverclouds/nicarext/extension/doc/configuration.md)');
+    }
+
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
+    
 }
 

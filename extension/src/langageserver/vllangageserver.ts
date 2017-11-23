@@ -18,8 +18,7 @@ import { DocumentManager } from './DocumentManager'
 import { Compilers } from './VerilogCompiler'
 
 
-// *************** server initialisation
-console.log("Starting NiVerExt langage server for IVerilog ...");
+//console.log("Starting NiVerExt langage server for IVerilog ...");
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let cnxMgr = new ConnectionManager(createConnection(new IPCMessageReader(process), new IPCMessageWriter(process)));

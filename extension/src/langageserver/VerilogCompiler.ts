@@ -102,7 +102,7 @@ export namespace Compilers {
                             end: { line: lineNumber, character: Number.MAX_VALUE}
                         },
                         message: `${message}`,
-                        source:''
+                        source:'iverilog'
                     };
                     diagnostics.push(lastDiagnostic);
                     lastLineNumber=lineNumber;

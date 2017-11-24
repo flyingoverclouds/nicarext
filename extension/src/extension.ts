@@ -62,14 +62,32 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.window.showWarningMessage('Not a verilog (.v or .vh) file.');
             return; // not a verilog file
         }
-        var selection = editor.selection;
-//        var text = editor.document.getText(selection);
-
         // Display a message box to the user
-        vscode.window.showInformationMessage('Compiling : ' + editor.document.fileName);
+        vscode.window.showInformationMessage('Compiling file : ' + editor.document.fileName);
+        // TODO : start compilation :)
     });
     context.subscriptions.push(disposable3);
     
+
+    // ******************************** Activation of extension 'niverext.buildproject'
+    let disposableBP = vscode.commands.registerCommand('niverext.buildproject', () => {
+        
+            var editor = vscode.window.activeTextEditor;
+            if (!editor) {
+                vscode.window.showWarningMessage('No file file opened');
+                return; // No open text editor
+            }
+            if (!(editor.document.fileName.endsWith('.vpj') ){
+                vscode.window.showWarningMessage('Not a verilog project (.vpj) file.');
+                return; // not a verilog project file
+            }
+            // Display a message box to the user
+            vscode.window.showInformationMessage('Compiling project : ' + editor.document.fileName);
+            // TODO : start compilation :)
+        });
+        context.subscriptions.push(disposable3);
+        
+
 
     // ******************************** Activation LANGAGE SERVER
     // The server is hosted in subfolder ./langageserver
@@ -88,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Options to control the language client
 	let clientOptions: LanguageClientOptions = {
 		// Register the server for verilog code file
-		documentSelector: ['verilog'],
+		documentSelector: ['verilog','verilogproject'],
 		synchronize: {
 			// Synchronize the setting section 'niverextServer' to the server
 			configurationSection: 'niverextServer',

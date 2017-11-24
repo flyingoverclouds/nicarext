@@ -25,6 +25,11 @@
 			"aliases": ["Verilog", "verilog"],
 			"extensions": [".v",".vh"],
 			"configuration": "./verilog.configuration.json"
+        },
+        {
+			"id": "verilogproject",
+			"aliases": ["VerilogProjet", "verilogproject"],
+			"extensions": [".vpj"]
 		}],
 		"grammars": [{
 			"language": "verilog",
@@ -47,9 +52,25 @@
             },
             {
                 "command": "niverext.buildfile",
-                "title": "[NiVerExt] Build the current iVerilog file and generate a .vvp binary"
+                "title": "Build the current iVerilog file"
+            },
+            {
+                "command": "niverext.buildproject",
+                "title": "Build the project"
             }
         ],
+        "menus": { 
+            "explorer/context": [{
+                "when": "resourceLangId == verilog",
+                "command": "niverext.buildfile",
+                "group": "1_modification"
+            },
+            {
+                "when": "resourceLangId == verilogproject",
+                "command": "niverext.buildproject",
+                "group": "1_modification"
+            }]
+        },
         "configuration": {
             "type": "object",
             "title": "Configuration for NiVerExt extension",

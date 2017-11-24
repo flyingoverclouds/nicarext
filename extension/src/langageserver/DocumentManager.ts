@@ -69,7 +69,7 @@ export class DocumentManager
         }
         this.isCompiling=true;
         try {
-            if(documentUri.startsWith("file:///"))
+            if(documentUri.startsWith("file:///") && (documentUri.endsWith(".v") || documentUri.endsWith(".vh")))
             {
                 let filePath: string = querystring.unescape(documentUri).replace("file:///","");
                 let compiler = new Compilers.Compiler(this.connectionManager.getSettings().niverextServer); 

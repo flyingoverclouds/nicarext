@@ -27,6 +27,7 @@ export class ConnectionManager
         this.connection.onCompletion( (params): CompletionItem[] => this.OnCompletion(params));
         this.connection.onCompletionResolve( (item): CompletionItem => this.OnCompletionResolve(item));
         this.connection.onDidChangeWatchedFiles( (changes) => this.OnDidChangedWatchedFiles(changes) );
+
     }
 
     public Listen():void {

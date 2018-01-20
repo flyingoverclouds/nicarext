@@ -16,6 +16,7 @@ import {
 import { ISettings, INiVerExtSettings } from './ISettings';
 import { ConnectionManager } from './ConnectionManager';
 import { Compilers } from './VerilogCompiler'
+//import { VPJinterfaces } from './VPJinterfaces'
 
 export class DocumentManager
 {
@@ -33,11 +34,15 @@ export class DocumentManager
         documents.onWillSave((save) => this.DocumentWillSave(save));
         documents.onDidSave((saved) => this.DocumentSaved(saved));
 
+        // TODO : find .vpj file and load dependencie graph
+        
         documents.listen(this.connectionManager.getConnection());
     }
 
     private DocumentContentChanged(change:TextDocumentChangeEvent){
         //console.log("DocumentManager.DocumentContentChanged : " + change.document.uri);
+
+        // TODO : detect if .vpj file change to relad dependencies graph
     }
 
     private DocumentClosed(closed:TextDocumentChangeEvent) {
@@ -84,7 +89,6 @@ export class DocumentManager
         {
             this.isCompiling=false;
         }
-
     }
 
     private SendDiagnostics(documentUri:string, diagnostics: Diagnostic[] ){

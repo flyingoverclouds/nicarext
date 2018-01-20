@@ -77,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.window.showWarningMessage('No file file opened');
                 return; // No open text editor
             }
-            if (!(editor.document.fileName.endsWith('.vpj') ){
+            if (!(editor.document.fileName.endsWith('.vpj'))) {
                 vscode.window.showWarningMessage('Not a verilog project (.vpj) file.');
                 return; // not a verilog project file
             }

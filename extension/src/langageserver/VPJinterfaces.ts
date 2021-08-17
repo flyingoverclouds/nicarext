@@ -1,6 +1,6 @@
 'use strict';
 /*
- * This class implement vscode langag server document management for the niverext extension.
+ * This class implement vscode langag server document management for the nicarext extension.
  *
  */
 
@@ -8,9 +8,9 @@ import * as querystring from 'querystring';
 
 import * as vscode from 'vscode';
 import {
-    IConnection, TextDocumentSyncKind,
+    Connection, TextDocumentSyncKind,
     TextDocumentChangeEvent,
-	TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
+	TextDocuments,  Diagnostic, DiagnosticSeverity,
  } from 'vscode-languageserver';
 
 import { ISettings, INiVerExtSettings } from './ISettings';

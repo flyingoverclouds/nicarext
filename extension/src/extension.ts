@@ -6,7 +6,14 @@ import * as vscode from 'vscode' ;
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
+import { workspace, ExtensionContext } from 'vscode';
+
+import {
+  LanguageClient,
+  LanguageClientOptions,
+  ServerOptions,
+  TransportKind
+} from 'vscode-languageclient/node';
 
 import { Nicorext } from "./verilogTest1";
 import { ISettings } from './langageserver/ISettings';
@@ -18,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "NiVerExt-4-IVerilog" is now active!');
+    console.log('Bien joué ! Your extension "NiVerExt-4-IVerilog" is now active!');
     
     // ***************************** ACTIONVATION Extension Test 1 "sayhello"
 
@@ -95,7 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
     let serverModule = context.asAbsolutePath(path.join('out/src/langageserver', 'vllangageserver.js'));
 
     // The debug options for the server
-	let debugOptions = { execArgv: ["--nolazy", "--debug=6009"] };
+	let debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
 	
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used

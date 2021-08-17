@@ -8,10 +8,12 @@ import * as querystring from 'querystring';
 
 import * as vscode from 'vscode';
 import {
-    IConnection, TextDocumentSyncKind,
+    Connection, TextDocumentSyncKind,
     TextDocumentChangeEvent,
-	TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
+	TextDocuments,  Diagnostic, DiagnosticSeverity,
  } from 'vscode-languageserver';
+
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 import { ISettings, INiVerExtSettings } from './ISettings';
 import { ConnectionManager } from './ConnectionManager';
@@ -26,7 +28,7 @@ export class DocumentManager
     /******* CONSTRUCTOR     */
     constructor(cnxmgr: ConnectionManager ) {
         this.connectionManager=cnxmgr;
-        let documents: TextDocuments = new TextDocuments();
+        let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
         
         documents.onDidChangeContent((changed) => this.DocumentContentChanged(changed));
         documents.onDidClose((closed) => this.DocumentClosed(closed));
@@ -39,28 +41,28 @@ export class DocumentManager
         documents.listen(this.connectionManager.getConnection());
     }
 
-    private DocumentContentChanged(change:TextDocumentChangeEvent){
+    private DocumentContentChanged(change:TextDocumentChangeEvent<TextDocument>){
         //console.log("DocumentManager.DocumentContentChanged : " + change.document.uri);
 
         // TODO : detect if .vpj file change to relad dependencies graph
     }
 
-    private DocumentClosed(closed:TextDocumentChangeEvent) {
+    private DocumentClosed(closed:TextDocumentChangeEvent<TextDocument>) {
         //console.log("DocumentManager.DocumentClosed : " + closed.document.uri);
         this.SendDiagnostics(closed.document.uri,[]); // clearing diagnostics for the closed document
     }
 
-    private DocumentOpened(opened:TextDocumentChangeEvent){
+    private DocumentOpened(opened:TextDocumentChangeEvent<TextDocument>){
         //console.log("DocumentManager.DocumentOpened : " + opened.document.uri);
         this.CheckVerilogSyntax(opened.document.uri);
     }
 
-    private DocumentSaved(saved:TextDocumentChangeEvent) {
+    private DocumentSaved(saved:TextDocumentChangeEvent<TextDocument>) {
         //console.log("DocumentManager.DocumentSaved : " + saved.document.uri);
         this.CheckVerilogSyntax(saved.document.uri);
     }
 
-    private DocumentWillSave(save: TextDocumentChangeEvent) {
+    private DocumentWillSave(save: TextDocumentChangeEvent<TextDocument>) {
         console.log("DocumentManager.DocumentWillSave : " + save.document.uri);
     }
 

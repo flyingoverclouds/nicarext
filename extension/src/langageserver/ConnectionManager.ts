@@ -4,9 +4,8 @@
  */
 import * as vscode from 'vscode';
 import {
-	IPCMessageReader, IPCMessageWriter,
-	createConnection, IConnection, TextDocumentSyncKind,
-	TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
+	createConnection, Connection, TextDocumentSyncKind,
+	TextDocuments, Diagnostic, DiagnosticSeverity,
     InitializeParams, InitializeResult, TextDocumentPositionParams,
     DidChangeConfigurationParams, DidChangeWatchedFilesParams,
 	CompletionItem, CompletionItemKind
@@ -16,11 +15,11 @@ import { ISettings, INiVerExtSettings } from './ISettings';
 
 export class ConnectionManager
 {
-    readonly connection: IConnection; 
+    readonly connection: Connection; 
     private currentSettings: ISettings;
     private workspaceRoot: string;
 
-    constructor(cnx: IConnection) {
+    constructor(cnx: Connection) {
         this.connection = cnx;
         this.connection.onInitialize( (initParams): InitializeResult => this.OnInitialized(initParams) );
         this.connection.onDidChangeConfiguration( (change) =>  this.OnDidChangeConfiguration(change) );
@@ -44,7 +43,7 @@ export class ConnectionManager
     }
 
     private OnInitialized(params:InitializeParams): InitializeResult {
-        //this.connection.console.log("NICAREXT:  ConnectionManager.OnInitialize");
+        this.connection.console.log("NICAREXT:  ConnectionManager.OnInitialize");
         this.workspaceRoot = params.rootPath; // store locally the root folder ofworkspace open in vscode
         return {
             capabilities: {
